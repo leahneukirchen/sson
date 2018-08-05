@@ -1,6 +1,7 @@
 #!/usr/bin/env ruby
 
-$: << "../lib"
+$: << File.dirname(File.realpath(__FILE__)) + "/../lib"
+
 require 'sson'
 
 raw = false
