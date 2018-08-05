@@ -1,0 +1,31 @@
+#!/usr/bin/env ruby
+
+$: << "../lib"
+require 'sson'
+
+raw = false
+if ARGV.first == "-r"
+  ARGV.shift
+  raw = true
+end
+
+input = ARGF.read
+
+begin
+  case input[0]
+  when "{", "[", '"'
+    if raw
+      puts SSON.generate(JSON.parse(input))
+    else
+      puts SSON.pretty_generate(JSON.parse(input))
+    end
+  else
+    if raw
+      puts JSON.generate(SSON.parse(input))
+    else
+      puts JSON.pretty_generate(SSON.parse(input))
+    end
+  end
+rescue SSON::SSONError, JSON::JSONError => e
+  abort "error: " + e.message
+end
