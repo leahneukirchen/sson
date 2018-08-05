@@ -18,16 +18,16 @@ require 'json'
 require 'prettyprint'
 require 'strscan'
 
-module SSON; end
-class << SSON
+module SSON
   VERSION = "0.1"
-               
-  SCANIDENT = /[^0-9#;()" \t\r\n+-][^#;()" \t\r\n]*/
-  IDENT = /\A#{SCANIDENT}\z/
 
   class SSONError < StandardError; end
   class GeneratorError < SSONError; end
   class ParserError < SSONError; end
+end
+class << SSON
+  SCANIDENT = /[^0-9#;()" \t\r\n+-][^#;()" \t\r\n]*/
+  IDENT = /\A#{SCANIDENT}\z/
 
   def generate(o)
     case o
@@ -137,7 +137,7 @@ class << SSON
     rescue StopIteration
       r
     else
-      raise ParserError, "trailing garbage"
+      raise SSON::ParserError, "trailing garbage"
     end
   end
 
@@ -161,7 +161,7 @@ class << SSON
       elsif s = ss.scan(/[-+]?(?:\d*\.?\d+|\d+\.?\d*)(?:[eE][-+]?\d+)?/)
         yield Float(s)
       else
-        raise ParserError, "invalid SSON: " + ss.peek(20).dump
+        raise SSON::ParserError, "invalid SSON: " + ss.peek(20).dump
       end
     end
   end
@@ -185,7 +185,7 @@ class << SSON
       end
       e.next
       r
-    when :CLOSE;   raise ParserError, "invalid SSON, toplevel )"
+    when :CLOSE;   raise SSON::ParserError, "invalid SSON, toplevel )"
     when :NULL;    nil
     when :TRUE;    true
     when :FALSE;   false
